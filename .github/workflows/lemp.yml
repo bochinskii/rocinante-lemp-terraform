@@ -1,0 +1,62 @@
+name: deploy_lemp_auto_terraform
+
+on:
+  workflow_dispatch:
+  #push:
+    #branches:
+      #- main
+
+env:
+  AWS_DEFAULT_REGION: "eu-central-1"
+  ROCINANTE_KEY: "rocinante.key"
+  GPG_ID: "126833D0A5DBB929717B4CFD5DD2E6DF5EE1E8E3"
+
+jobs:
+
+  CI_part:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Clone repository
+      uses: actions/checkout@v3
+
+    - name: Export rocinante key
+      run: |
+        echo "${{ secrets.ROCINANTE_KEY }}" > ./configs/${ env.ROCINANTE_KEY }
+
+    - name: Export and Import gpg key
+      run: |
+        echo "${{ secrets.GPG_KEY }}" > ./gpg/gpg.key
+        gpg --import ./gpg/gpg.pub
+        gpg --pinentry-mode=loopback --passphrase "${ secrets.GPG_PASSWORD }" --allow-secret-key-import --import ./gpg/gpg.key
+
+    - name: Decrypt data
+      run: |
+        gpg --pinentry-mode=loopback --passphrase "${ secrets.GPG_PASSWORD }" --decrypt -r ${ env.GPG_ID } ./data/rocinante_db_220503.sql.bz.asc > ./data/rocinante_db_220503.sql.bz
+        gpg --pinentry-mode=loopback --passphrase "${ secrets.GPG_PASSWORD }" --decrypt -r ${ env.GPG_ID } ./data/rocinante_220503.tar.bz.asc > ./data/rocinante_220503.tar.bz
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.1.9
+
+    - name: Terraform
+      run: |
+        AWS_ACCESS_KEY_ID="${ secrets.TERRAFORM_AWS_ACCESS_KEY_ID }"
+        AWS_SECRET_ACCESS_KEY="${ secrets.TERRAFORM_AWS_SECRET_ACCESS_KEY }"
+        AWS_DEFAULT_REGION="${{ env.AWS_DEFAULT_REGION }}"
+        TF_VAR_site_dir=${{ secrets.SITE_DIR }}
+        TF_VAR_mysql_root_pass=${{ secrets.MYSQL_ROOT_PASS }}
+        TF_VAR_mysql_drupal_user_pass=${{ secrets.MYSQL_DRUPAL_USER_PASS }}
+        TF_VAR_mysql_admin_user=${{ secrets.MYSQL_ADMIN_USER }}/
+        TF_VAR_mysql_drupal_user=${{ secrets.MYSQL_DRUPAL_USER }}
+        TF_VAR_mysql_admin_user_pass={{ secrets.MYSQL_ADMIN_USER_PASS }}
+        TF_VAR_ssh_port=${{ secrets.SSH_PORT }}
+        TF_VAR_mysql_drupal_db=${{ secrets.MYSQL_DRUPAL_DB}}
+        cd ./terraform
+        terraform init
+        terraform fmt -check
+        terraform plan -input=false
+        terraform apply -auto-approve -input=false
