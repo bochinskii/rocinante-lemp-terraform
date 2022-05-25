@@ -57,6 +57,5 @@ jobs:
         TF_VAR_mysql_drupal_db=${{ secrets.MYSQL_DRUPAL_DB}}
         cd ./terraform
         terraform init
-        terraform fmt -check
         terraform plan -input=false
         terraform apply -auto-approve -input=false
