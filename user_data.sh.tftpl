@@ -139,7 +139,7 @@ openssl dhparam -out /etc/nginx/tls/dhparam.pem 2048
 export SSL_CERT=${ssl_cert}
 export SSL_KEY=${ssl_key}
 
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/tls/$SSL_KEY -out /etc/nginx/tls/$SSL_CERT -subj "/C=MA/ST= /L=MCR/O= /OU= /CN=rocinante.in"
+#openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/tls/$SSL_KEY -out /etc/nginx/tls/$SSL_CERT -subj "/C=MA/ST= /L=MCR/O= /OU= /CN=rocinante.in"
 
 #
 # Drupal
@@ -147,9 +147,6 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/tls/$SSL_
 export SITE_DIR=${site_dir}
 
 mkdir -p $SITE_DIR/{www,log}
-curl -Lo /tmp/drupal.tar.gz https://www.drupal.org/download-latest/tar.gz
-tar -xzvf /tmp/drupal.tar.gz -C $SITE_DIR/www --strip-components=1
-chown -R nginx: $SITE_DIR
 
 export SITE_CONFIG=${site_config}
 
@@ -293,45 +290,12 @@ server {
     return 301 https://\$host\$request_uri;
 }
 EOF
-systemctl restart nginx
+
 
 #
 # PHP My Admin
 #
-mkdir $SITE_DIR/www/dbadmin
-curl -Lo /tmp/phpmyadmin.tar.xz https://files.phpmyadmin.net/phpMyAdmin/5.1.3/phpMyAdmin-5.1.3-all-languages.tar.xz
-tar -xvf /tmp/phpmyadmin.tar.xz -C $SITE_DIR/www/dbadmin/ --strip-components=1
-touch $SITE_DIR/www/dbadmin/config.in.php
 
-export PMA_BLOWFISH=`echo $RANDOM | md5sum | head -c 32; echo;`
-
-cat << EOF > $SITE_DIR/www/dbadmin/config.in.php
-<?php
-
-\$i = 0;
-
-/* Server: localhost [1] */
-\$i++;
-\$cfg['Servers'][\$i]['verbose'] = '';
-\$cfg['Servers'][\$i]['host'] = 'localhost';
-\$cfg['Servers'][\$i]['port'] = '';
-\$cfg['Servers'][\$i]['socket'] = '';
-\$cfg['Servers'][\$i]['auth_type'] = 'cookie';
-\$cfg['Servers'][\$i]['user'] = '';
-\$cfg['Servers'][\$i]['password'] = '';
-
-/* End of servers configuration */
-
-\$cfg['DefaultLang'] = 'en';
-\$cfg['blowfish_secret'] = '$PMA_BLOWFISH';
-\$cfg['ServerDefault'] = 1;
-\$cfg['UploadDir'] = '';
-\$cfg['SaveDir'] = '';
-
-\$cfg['TempDir'] = '$SITE_DIR/www/dbadmin/tmp';
-?>
-EOF
-chown -R nginx: $SITE_DIR/www/dbadmin
 
 export PMA_USER=$MYSQL_ADMIN_USER
 export PMA_HTPASSW=$MYSQL_ADMIN_USER_PASS
@@ -406,9 +370,9 @@ cp -f /home/ec2-user/configs/nginx.conf /etc/nginx/
 cp -f /home/ec2-user/configs/{my.cnf,php.ini} /etc/
 cp -f /home/ec2-user/configs/{$SSL_CERT,$SSL_KEY} /etc/nginx/tls
 chmod 0400 /etc/nginx/tls/$SSL_KEY
-systemctl restart mysqld
-systemctl restart php-fpm
-systemctl restart nginx
+#systemctl restart mysqld
+#systemctl restart php-fpm
+#systemctl restart nginx
 
 #
 # Data
@@ -427,3 +391,7 @@ mysql --connect-expired-password -u$MYSQL_ADMIN_USER -p$MYSQL_ADMIN_USER_PASS -e
 mysql --connect-expired-password -u$MYSQL_ADMIN_USER -p$MYSQL_ADMIN_USER_PASS -e "CREATE DATABASE $MYSQL_DRUPAL_DB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 bunzip2 /home/ec2-user/data/$DB_DUMP_NAME
 mysql --connect-expired-password -u$MYSQL_ADMIN_USER -p$MYSQL_ADMIN_USER_PASS -A -D $MYSQL_DRUPAL_DB < /home/ec2-user/data/$DB_DUMP_NAME_ONLY
+
+systemctl restart mysqld
+systemctl restart php-fpm
+systemctl restart nginx
