@@ -10,6 +10,7 @@ env:
   AWS_DEFAULT_REGION: "eu-central-1"
   ROCINANTE_KEY: "rocinante.key"
   GPG_ID: "126833D0A5DBB929717B4CFD5DD2E6DF5EE1E8E3"
+  TERRAFORM_VERSION: "1.2.1"
 
 jobs:
 
@@ -50,4 +51,23 @@ jobs:
         gpg --pinentry-mode=loopback --passphrase "${{ secrets.GPG_PASSWORD }}" --decrypt -r ${{ env.GPG_ID }} ./data/rocinante_db_220503.sql.bz.asc > ./data/rocinante_db_220503.sql.bz
         gpg --pinentry-mode=loopback --passphrase "${{ secrets.GPG_PASSWORD }}" --decrypt -r ${{ env.GPG_ID }} ./data/rocinante_220503.tar.bz.asc > ./data/rocinante_220503.tar.bz
         rm -f ./data/{rocinante_db_220503.sql.bz.asc,rocinante_220503.tar.bz.asc}
-        ls -l ./data
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+    - name: Terraform
+      run: |
+        AWS_ACCESS_KEY_ID="${ secrets.TERRAFORM_AWS_ACCESS_KEY_ID }"
+        AWS_SECRET_ACCESS_KEY="${ secrets.TERRAFORM_AWS_SECRET_ACCESS_KEY }"
+        AWS_DEFAULT_REGION="${{ env.AWS_DEFAULT_REGION }}"
+        TF_VAR_site_dir=${{ secrets.SITE_DIR }}
+        TF_VAR_mysql_root_pass=${{ secrets.MYSQL_ROOT_PASS }}
+        TF_VAR_mysql_drupal_user_pass=${{ secrets.MYSQL_DRUPAL_USER_PASS }}
+        TF_VAR_mysql_admin_user=${{ secrets.MYSQL_ADMIN_USER }}/
+        TF_VAR_mysql_drupal_user=${{ secrets.MYSQL_DRUPAL_USER }}
+        TF_VAR_mysql_admin_user_pass={{ secrets.MYSQL_ADMIN_USER_PASS }}
+        TF_VAR_ssh_port=${{ secrets.SSH_PORT }}
+        TF_VAR_mysql_drupal_db=${{ secrets.MYSQL_DRUPAL_DB}}
+        terraform version
