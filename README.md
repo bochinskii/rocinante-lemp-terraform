@@ -1,6 +1,6 @@
 <h1>Проект "Rocinante LEMP"</h1><br>
 <p>
-С помощью GitHub Action - "lemp" и terraform устанавливается LEMP с CMS Drupal 9.
+С помощью GitHub Action - "lemp" и terraform устанавливается LEMP.
 </p>
 <p>
 В директории "gpg" находится gpg публичный ключ. При помощи данного action'а из переменной
