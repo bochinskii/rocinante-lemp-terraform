@@ -29,18 +29,20 @@ jobs:
 
     - name: Export rocinante key
       run: |
-        echo "${{ secrets.ROCINANTE_KEY }}" > rocinante.key
+        echo "${{ secrets.ROCINANTE_KEY }}" > ./configs/rocinante.key
+        ls -l ./configs
 
     - name: Export ssh key
       run: |
         mkdir ./secret
         echo "${{ secrets.SSH_KEY }}" > ./secret/bochinskii_Frankfurt_2.pem
         chmod 0600 ./secret/bochinskii_Frankfurt_2.pem
+        ls -l ./secret
 
     - name: Export and Import gpg key
       run: |
         echo "${{ secrets.GPG_KEY }}" > ./gpg/gpg.key
         gpg --import ./gpg/gpg.pub
-        gpg --pinentry-mode=loopback --passphrase "${ secrets.GPG_PASSWORD }" --allow-secret-key-import --import ./gpg/gpg.key
+        gpg --pinentry-mode=loopback --passphrase "${{ secrets.GPG_PASSWORD }}" --allow-secret-key-import --import ./gpg/gpg.key
         gpg --list-key ${{ env.GPG_ID }}
         gpg --list-secret-key ${{ env.GPG_ID }}
