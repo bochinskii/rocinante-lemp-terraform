@@ -30,14 +30,12 @@ jobs:
     - name: Export rocinante key
       run: |
         echo "${{ secrets.ROCINANTE_KEY }}" > ./configs/rocinante.key
-        ls -l ./configs
 
     - name: Export ssh key
       run: |
         mkdir ./secret
         echo "${{ secrets.SSH_KEY }}" > ./secret/bochinskii_Frankfurt_2.pem
         chmod 0600 ./secret/bochinskii_Frankfurt_2.pem
-        ls -l ./secret
 
     - name: Export and Import gpg key
       run: |
@@ -46,3 +44,9 @@ jobs:
         gpg --pinentry-mode=loopback --passphrase "${{ secrets.GPG_PASSWORD }}" --allow-secret-key-import --import ./gpg/gpg.key
         gpg --list-key ${{ env.GPG_ID }}
         gpg --list-secret-key ${{ env.GPG_ID }}
+
+    - name: Decrypt data
+      run: |
+        gpg --pinentry-mode=loopback --passphrase "${ secrets.GPG_PASSWORD }" --decrypt -r ${ env.GPG_ID } ./data/rocinante_db_220503.sql.bz.asc > ./data/rocinante_db_220503.sql.bz
+        gpg --pinentry-mode=loopback --passphrase "${ secrets.GPG_PASSWORD }" --decrypt -r ${ env.GPG_ID } ./data/rocinante_220503.tar.bz.asc > ./data/rocinante_220503.tar.bz
+        ls -l ./data
