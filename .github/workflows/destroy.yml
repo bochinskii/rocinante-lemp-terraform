@@ -49,4 +49,4 @@ jobs:
         echo "##############"
         echo "TERRAFORM DESTROY"
         echo "##############"
-        terraform destroy -auto-approve -input=false
+        terraform destroy -auto-approve
