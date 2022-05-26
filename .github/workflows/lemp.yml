@@ -24,6 +24,7 @@ jobs:
 
     - name: test gpg
       run: |
+        ls -l
         gpg --version
 
     - name: Export rocinante key
