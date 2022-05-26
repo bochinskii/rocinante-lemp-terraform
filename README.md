@@ -1,4 +1,4 @@
-<h1>Проект "Rocinante LEMP"</h1><br>
+<h1>Проект "Rocinante LEMP с пользовательским сайтом" на AWS EC2 Instance'е</h1><br>
 <p>
 С помощью GitHub Action - "lemp" и terraform устанавливается LEMP.
 </p>
