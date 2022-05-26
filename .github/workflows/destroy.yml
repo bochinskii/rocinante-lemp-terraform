@@ -43,7 +43,10 @@ jobs:
         export TF_VAR_mysql_drupal_db="${{ secrets.MYSQL_DRUPAL_DB }}"
         terraform version
         echo "##############"
+        echo "TERRAFORM INIT"
+        echo "##############"
+        terraform init
+        echo "##############"
         echo "TERRAFORM DESTROY"
         echo "##############"
         terraform destroy -auto-approve -input=false
-        
