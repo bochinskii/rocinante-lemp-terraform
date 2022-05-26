@@ -29,7 +29,7 @@ jobs:
 
     - name: Export rocinante key
       run: |
-        echo "${{ secrets.ROCINANTE_KEY }}" > ${ env.ROCINANTE_KEY }
+        echo "${{ secrets.ROCINANTE_KEY }}" > rocinante.key
 
     - name: Export ssh key
       run: |
