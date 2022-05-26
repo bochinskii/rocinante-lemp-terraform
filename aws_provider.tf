@@ -4,6 +4,12 @@ terraform {
       source = "hashicorp/aws"
     }
   }
+
+  backend "s3" {
+    bucket = "bochinskii-rocinante-state"
+    key    = "terraform.tfstate"
+    region = "eu-central-1"
+  }
 }
 
 provider "aws" {}
