@@ -1,4 +1,4 @@
-name: bkp
+name: lemp
 
 on:
   workflow_dispatch:
@@ -43,5 +43,3 @@ jobs:
         gpg --pinentry-mode=loopback --passphrase "${ secrets.GPG_PASSWORD }" --allow-secret-key-import --import ./gpg/gpg.key
         gpg --list-key ${{ env.GPG_ID }}
         gpg --list-secret-key ${{ env.GPG_ID }}
-
-    
