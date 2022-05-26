@@ -41,6 +41,8 @@ jobs:
         echo "${{ secrets.GPG_KEY }}" > ./gpg/gpg.key
         gpg --import ./gpg/gpg.pub
         gpg --pinentry-mode=loopback --passphrase "${ secrets.GPG_PASSWORD }" --allow-secret-key-import --import ./gpg/gpg.key
+        gpg --list-key ${{ env.GPG_ID }}
+        gpg --list-secret-key ${{ env.GPG_ID }}
 
     - name: Decrypt data
       run: |
