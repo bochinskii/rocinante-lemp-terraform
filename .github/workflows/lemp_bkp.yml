@@ -1,4 +1,4 @@
-name: deploy_lemp_auto_terraform
+name: bkp
 
 on:
   workflow_dispatch:
