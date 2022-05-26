@@ -71,6 +71,15 @@ jobs:
         export TF_VAR_ssh_port="${{ secrets.SSH_PORT }}"
         export TF_VAR_mysql_drupal_db="${{ secrets.MYSQL_DRUPAL_DB }}"
         terraform version
+        echo "##############"
+        echo "TERRAFORM INIT"
+        echo "##############"
         terraform init
+        echo "##############"
+        echo "TERRAFORM PLAN"
+        echo "##############"
         terraform plan -input=false
+        echo "##############"
+        echo "TERRAFORM APPLY"
+        echo "##############"
         terraform apply -auto-approve -input=false
