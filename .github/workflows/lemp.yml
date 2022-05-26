@@ -69,3 +69,6 @@ jobs:
         TF_VAR_ssh_port="${{ secrets.SSH_PORT }}"
         TF_VAR_mysql_drupal_db="${{ secrets.MYSQL_DRUPAL_DB }}"
         terraform version
+        terraform init
+        terraform plan -input=false
+        terraform apply -auto-approve -input=false
