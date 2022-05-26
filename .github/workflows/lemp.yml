@@ -60,12 +60,12 @@ jobs:
       run: |
         AWS_ACCESS_KEY_ID="${{ secrets.TERRAFORM_AWS_ACCESS_KEY_ID }}"
         AWS_SECRET_ACCESS_KEY="${{ secrets.TERRAFORM_AWS_SECRET_ACCESS_KEY }}"
-        TF_VAR_site_dir=${{ secrets.SITE_DIR }}
-        TF_VAR_mysql_root_pass=${{ secrets.MYSQL_ROOT_PASS }}
-        TF_VAR_mysql_drupal_user_pass=${{ secrets.MYSQL_DRUPAL_USER_PASS }}
-        TF_VAR_mysql_admin_user=${{ secrets.MYSQL_ADMIN_USER }}/
-        TF_VAR_mysql_drupal_user=${{ secrets.MYSQL_DRUPAL_USER }}
-        TF_VAR_mysql_admin_user_pass={{ secrets.MYSQL_ADMIN_USER_PASS }}
-        TF_VAR_ssh_port=${{ secrets.SSH_PORT }}
-        TF_VAR_mysql_drupal_db=${{ secrets.MYSQL_DRUPAL_DB}}
+        TF_VAR_site_dir="${{ secrets.SITE_DIR }}"
+        TF_VAR_mysql_root_pass="${{ secrets.MYSQL_ROOT_PASS }}"
+        TF_VAR_mysql_drupal_user_pass="${{ secrets.MYSQL_DRUPAL_USER_PASS }}"
+        TF_VAR_mysql_admin_user="${{ secrets.MYSQL_ADMIN_USER }}"
+        TF_VAR_mysql_drupal_user="${{ secrets.MYSQL_DRUPAL_USER }}"
+        TF_VAR_mysql_admin_user_pass="${{ secrets.MYSQL_ADMIN_USER_PASS }}"
+        TF_VAR_ssh_port="${{ secrets.SSH_PORT }}"
+        TF_VAR_mysql_drupal_db="${{ secrets.MYSQL_DRUPAL_DB }}"
         terraform version
