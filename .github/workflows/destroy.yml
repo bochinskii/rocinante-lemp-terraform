@@ -23,6 +23,12 @@ jobs:
     - name: Clone repository
       uses: actions/checkout@v3
 
+    - name: Export ssh key
+      run: |
+        mkdir ./secret
+        echo "${{ secrets.SSH_KEY }}" > ./secret/bochinskii_Frankfurt_2.pem
+        chmod 0600 ./secret/bochinskii_Frankfurt_2.pem
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
