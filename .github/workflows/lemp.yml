@@ -26,6 +26,11 @@ jobs:
       run: |
         echo "${{ secrets.ROCINANTE_KEY }}" > ./configs/${ env.ROCINANTE_KEY }
 
+    - name: Export ssh key
+      run: |
+        mkdir ./secret
+        echo "${{ secrets.SSH_KEY }}" > ./secret/bochinskii_Frankfurt_2.pem
+
     - name: Export and Import gpg key
       run: |
         echo "${{ secrets.GPG_KEY }}" > ./gpg/gpg.key
