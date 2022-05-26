@@ -50,3 +50,4 @@ jobs:
         gpg --pinentry-mode=loopback --passphrase "${{ secrets.GPG_PASSWORD }}" --decrypt -r ${{ env.GPG_ID }} ./data/rocinante_db_220503.sql.bz.asc > ./data/rocinante_db_220503.sql.bz
         gpg --pinentry-mode=loopback --passphrase "${{ secrets.GPG_PASSWORD }}" --decrypt -r ${{ env.GPG_ID }} ./data/rocinante_220503.tar.bz.asc > ./data/rocinante_220503.tar.bz
         rm -f ./data/{rocinante_db_220503.sql.bz.asc,rocinante_220503.tar.bz.asc}
+        ls -l ./data
